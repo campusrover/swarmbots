@@ -8,6 +8,7 @@ project(swarmbots)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  gazebo_ros
   rospy
 )
 
@@ -103,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES swarmbots
-#  CATKIN_DEPENDS rospy
+#  CATKIN_DEPENDS gazebo_ros rospy
 #  DEPENDS system_lib
 )
 
