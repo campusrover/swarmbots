@@ -10,6 +10,7 @@ project(swarmbots)
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
   rospy
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES swarmbots
-#  CATKIN_DEPENDS gazebo_ros rospy
+#  CATKIN_DEPENDS gazebo_ros rospy tf
 #  DEPENDS system_lib
 )
 
