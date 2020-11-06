@@ -1,5 +1,7 @@
 <launch>
   <param name="/use_sim_time" value="true" />
+  <!-- need to declare model up here before passing into the include file! -->
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi, burger_for_autorace]"/>
 
   <!-- start empty world -->
   <node name="gazebo" pkg="gazebo_ros" type="gazebo" 
@@ -10,7 +12,7 @@
 
   <!-- include our robots -->
   <include file="$(find swarmbots)/launch/robots.launch">
-  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
-  <param name="model" value="burger_for_autorace"/>
+  <!-- pass model of robot into robots.launch file getting $(arg model) from command line, which launches the urdf -->
+  <arg name="model" value="$(arg model)"/>
   </include>
 </launch>
