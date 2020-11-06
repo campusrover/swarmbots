@@ -31,7 +31,7 @@ g_linear_vel = 0
 MAX_LINEAR_VEL = .4
 MAX_ANGULAR_VEL = math.pi/4
 MIN_WALL_DIST = .4
-name = 'leader'
+name = 'swarmboss'
 
 rospy.init_node(name)
 rate = rospy.Rate(10)
