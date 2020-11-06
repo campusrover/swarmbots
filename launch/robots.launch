@@ -4,15 +4,15 @@
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_burger_for_autorace.urdf.xacro" />
 
 
-  <!-- BEGIN ROBOT 1-->
-  <group ns="robot1">
-    <param name="tf_prefix" value="robot1_tf" />
+  <!-- BEGIN Swarm Boss-->
+  <group ns="swarmboss">
+    <param name="tf_prefix" value="swarmboss_tf" />
     <include file="$(find swarmbots)/launch/one_robot.launch" >
-    <arg name="model" value="burger"/>
-      <arg name="x_pos" value="1" />
-      <arg name="y_pos" value="1" />
-      <arg name="z_pos" value="0" />
-      <arg name="robot_name"  value="Robot1" />
+    <arg name="robot_name" value="Swarmboss" />
+      <arg name="x_pos" value="0.0" />
+      <arg name="y_pos" value="1.0" />
+      <arg name="z_pos" value="0.0" />
+      
     </include>
   </group>
 
@@ -20,11 +20,10 @@
   <group ns="robot2">
     <param name="tf_prefix" value="robot2_tf" />
     <include file="$(find swarmbots)/launch/one_robot.launch" >
-    <arg name="model" value="burger"/>
-      <arg name="x_pos" value="-1" />
-      <arg name="y_pos" value="1" />
-      <arg name="z_pos" value="0" />
       <arg name="robot_name"  value="Robot2" />
+      <arg name="x_pos" value="0.0" />
+      <arg name="y_pos" value="-1.0" />
+      <arg name="z_pos" value="0.0" />
     </include>
   </group>
 </launch>

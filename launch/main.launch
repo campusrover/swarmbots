@@ -6,7 +6,7 @@
    args="$(find turtlebot3_gazebo)/worlds/empty.world" respawn="false" output="screen" />
 
   <!-- start gui -->
-  <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen"/>
+  <!-- <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen"/> -->
 
   <!-- include our robots -->
   <include file="$(find swarmbots)/launch/robots.launch"/>
