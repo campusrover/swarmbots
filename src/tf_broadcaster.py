@@ -23,8 +23,8 @@ def handle_robot_pose(msg, robot_name):
 
 if __name__ == '__main__':
     rospy.init_node('tf_broadcaster')
-    robot_name = rospy.get_param('~robot_name')
-    rospy.Subscriber('/%s/odom' % robot_name,
+    robot_name = rospy.get_namespace()[1:-1]
+    rospy.Subscriber('odom',
                      Odometry,
                      handle_robot_pose,
                      robot_name)

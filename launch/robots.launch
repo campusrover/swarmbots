@@ -26,8 +26,6 @@
       <arg name="y_pos" value="-1.0" />
       <arg name="z_pos" value="0.0" />
     </include>
-    <node pkg="swarmbots" type="tf_listener.py" name="listener" output="screen" >
-      <param name="robot_name" value="robot2" />
-    </node>
+    <node pkg="swarmbots" type="tf_listener.py" name="listener" output="screen" />
   </group>
 </launch>

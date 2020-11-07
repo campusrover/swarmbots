@@ -11,8 +11,11 @@ if __name__ == '__main__':
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
 
-    robot_name = rospy.get_param('~robot_name')
-    robot_vel = rospy.Publisher('%s/cmd_vel' % robot_name, geometry_msgs.msg.Twist, queue_size=1)
+    robot_name = rospy.get_namespace()[1:-1]
+    print('*****')
+    print(robot_name)
+    print('*****')
+    robot_vel = rospy.Publisher('cmd_vel', geometry_msgs.msg.Twist, queue_size=1)
 
     rate = rospy.Rate(10.0)
     while not rospy.is_shutdown():
