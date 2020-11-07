@@ -8,11 +8,10 @@
   <group ns="swarmboss">
     <param name="tf_prefix" value="swarmboss_tf" />
     <include file="$(find swarmbots)/launch/one_robot.launch" >
-    <arg name="robot_name" value="Swarmboss" />
+      <arg name="robot_name" value="swarmboss" />
       <arg name="x_pos" value="0.0" />
       <arg name="y_pos" value="1.0" />
       <arg name="z_pos" value="0.0" />
-      
     </include>
   </group>
 
@@ -20,10 +19,13 @@
   <group ns="robot2">
     <param name="tf_prefix" value="robot2_tf" />
     <include file="$(find swarmbots)/launch/one_robot.launch" >
-      <arg name="robot_name"  value="Robot2" />
+      <arg name="robot_name" value="robot2" />
       <arg name="x_pos" value="0.0" />
       <arg name="y_pos" value="-1.0" />
       <arg name="z_pos" value="0.0" />
     </include>
+    <node pkg="swarmbots" type="tf_listener.py" name="listener" output="screen" >
+      <param name="robot_name" value="robot2" />
+    </node>
   </group>
 </launch>
