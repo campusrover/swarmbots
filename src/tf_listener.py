@@ -5,6 +5,9 @@ import math
 import tf2_ros
 import geometry_msgs.msg
 
+def calc_magnitude(vector):
+    return math.sqrt(vector.x ** 2 + vector.y ** 2 + vector.z ** 2)
+
 if __name__ == '__main__':
     rospy.init_node('tf_listener')
 
@@ -12,9 +15,6 @@ if __name__ == '__main__':
     listener = tf2_ros.TransformListener(tfBuffer)
 
     robot_name = rospy.get_namespace()[1:-1]
-    print('*****')
-    print(robot_name)
-    print('*****')
     robot_vel = rospy.Publisher('cmd_vel', geometry_msgs.msg.Twist, queue_size=1)
 
     rate = rospy.Rate(10.0)
@@ -27,8 +27,9 @@ if __name__ == '__main__':
 
         msg = geometry_msgs.msg.Twist()
 
-        msg.angular.z = 4 * math.atan2(trans.transform.translation.y, trans.transform.translation.x)
-        msg.linear.x = 0.5 * math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
+        if calc_magnitude(trans.transform.translation) > .8:
+            msg.angular.z = 4 * math.atan2(trans.transform.translation.y, trans.transform.translation.x)
+            msg.linear.x = 0.5 * math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
 
         robot_vel.publish(msg)
 
