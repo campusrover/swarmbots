@@ -2,10 +2,11 @@
   <param name="/use_sim_time" value="true" />
   <!-- need to declare model up here before passing into the include file! -->
   <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi, burger_for_autorace]"/>
+  <arg name="world" default="empty"/>
 
   <!-- start empty world -->
-  <node name="gazebo" pkg="gazebo_ros" type="gazebo" 
-   args="$(find turtlebot3_gazebo)/worlds/empty.world" respawn="false" output="screen" />
+  <node name="gazebo" pkg="gazebo_ros" type="gazebo" respawn="false" output="screen"
+    args="-world_name $(find swarmbots)/worlds/$(arg world).world"/>
 
   <!-- start gui -->
   <!-- <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen"/> -->
