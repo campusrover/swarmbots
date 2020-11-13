@@ -8,7 +8,8 @@
   $(arg robot_name) -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param /robot_description" />
 
     <node pkg="robot_state_publisher" type="robot_state_publisher" 
-          name="robot_state_publisher" output="screen"/>
+          name="robot_state_publisher" output="screen">
+          </node>
 
   <node name="tf_broadcaster" pkg="swarmbots" type="tf_broadcaster.py" respawn="false" output="screen" />
     <!-- The odometry estimator, throttling, fake laser etc. go here -->

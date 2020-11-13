@@ -5,8 +5,14 @@
   <arg name="world" default="empty"/>
 
   <!-- start world -->
-  <node name="gazebo" pkg="gazebo_ros" type="gazebo" respawn="false" output="screen" 
-    args="-world_name $(find swarmbots)/worlds/$(arg world).world"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find swarmbots)/worlds/$(arg world).world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include> 
 
   <!-- include our robots -->
   <include file="$(find swarmbots)/launch/robots.launch">

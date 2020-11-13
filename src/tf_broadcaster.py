@@ -15,17 +15,18 @@ def handle_robot_pose(msg, robot_name):
 
     t.header.stamp = rospy.Time.now()
     t.header.frame_id = "world"
-    t.child_frame_id = robot_name + '_tf/base_link'
+    t.child_frame_id = robot_name + '/odom'
     t.transform.translation = msg.pose.pose.position
     t.transform.rotation = msg.pose.pose.orientation
 
     br.sendTransform(t)
 
-if __name__ == '__main__':
-    rospy.init_node('tf_broadcaster')
-    robot_name = rospy.get_namespace()[1:-1]
-    rospy.Subscriber('odom',
+rospy.init_node('tf_broadcaster')
+robot_name = rospy.get_namespace()[1:-1]
+rospy.Subscriber('odom',
                      Odometry,
                      handle_robot_pose,
                      robot_name)
+
+if __name__ == '__main__':
     rospy.spin()

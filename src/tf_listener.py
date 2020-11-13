@@ -20,7 +20,7 @@ if __name__ == '__main__':
     rate = rospy.Rate(10.0)
     while not rospy.is_shutdown():
         try:
-            trans = tfBuffer.lookup_transform(robot_name + '_tf/base_link', 'swarmboss_tf/base_link', rospy.Time())
+            trans = tfBuffer.lookup_transform(robot_name + '/odom', 'swarmboss/odom', rospy.Time())
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rate.sleep()
             continue
@@ -30,7 +30,10 @@ if __name__ == '__main__':
         if calc_magnitude(trans.transform.translation) > .8:
             msg.angular.z = 4 * math.atan2(trans.transform.translation.y, trans.transform.translation.x)
             msg.linear.x = 0.5 * math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
-
+            # make it not go too fast... gotta go slow
+            # commenting out for now bc it doesn't go around corners good without some wall avoidance
+            # msg.linear.x = min(0.5, msg.linear.x)
+        
         robot_vel.publish(msg)
 
         rate.sleep()
