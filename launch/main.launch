@@ -11,9 +11,9 @@
   <!-- start gui -->
   <!-- <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen"/> -->
 
-  <!-- include our robots -->
-  <include file="$(find swarmbots)/launch/robots.launch">
-  <!-- pass model of robot into robots.launch file getting $(arg model) from command line, which launches the urdf -->
-  <arg name="model" value="$(arg model)"/>
+  <!-- include Swarm Boss -->
+  <include file="$(find swarmbots)/launch/swarmboss.launch">
+    <!-- pass model of robot into robots.launch file getting $(arg model) from command line, which launches the urdf -->
+    <arg name="model" value="$(arg model)"/>
   </include>
 </launch>

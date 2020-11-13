@@ -1,0 +1,20 @@
+<launch>
+  <!-- No namespace here as we will share this description. 
+       Access with slash at the beginning -->
+  <arg name="model"/>
+  <param name="model" value="$(arg model)"/>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+  <arg name="ns"/>
+
+  <!-- BEGIN FOLLOWER -->
+  <group ns="$(arg ns)">
+    <param name="tf_prefix" value="$(eval arg('ns') + '_tf')" />
+    <include file="$(find swarmbots)/launch/one_robot.launch" >
+      <arg name="robot_name" value="$(arg ns)" />
+      <arg name="x_pos" value="0.0" />
+      <arg name="y_pos" value="-1.0" />
+      <arg name="z_pos" value="0.0" />
+    </include>
+    <node pkg="swarmbots" type="tf_listener.py" name="$(eval arg('ns') + '_listener')" output="screen" />
+  </group>
+</launch>
