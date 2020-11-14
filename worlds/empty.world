@@ -8,10 +8,10 @@
       <shadows>false</shadows>
     </scene>
 
-    <!-- A global light source >
+    <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
-    </include-->
+    </include>
 
     <!-- A ground plane -->
     <include>

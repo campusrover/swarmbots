@@ -9,7 +9,7 @@
 
   <!-- BEGIN FOLLOWER -->
   <group ns="$(arg ns)">
-    <param name="tf_prefix" value="$(arg ns)_tf" />
+    <param name="tf_prefix" value="$(arg ns)" />
     <include file="$(find swarmbots)/launch/one_robot.launch" >
       <arg name="robot_name" value="$(arg ns)" />
       <arg name="x_pos" value="0.0" />
