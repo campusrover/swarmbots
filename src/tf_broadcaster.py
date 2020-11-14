@@ -11,8 +11,6 @@ from nav_msgs.msg import Odometry
 
 def handle_robot_pose(msg, robot_name):
     br = tf2_ros.TransformBroadcaster()
-    tfBuffer = tf2_ros.Buffer()
-    tfListener = tf2_ros.TransformListener(tfBuffer)
     t = geometry_msgs.msg.TransformStamped()
 
     t.header.stamp = rospy.Time.now()
@@ -34,6 +32,8 @@ def handle_robot_pose(msg, robot_name):
 
 
 rospy.init_node('tf_broadcaster')
+tfBuffer = tf2_ros.Buffer()
+listener = tf2_ros.TransformListener(tfBuffer)
 robot_name = rospy.get_namespace()[1:-1]
 # remove this depending on if you have tf prefix
 # robot_name += '_tf'
