@@ -2,7 +2,7 @@
   <!-- No namespace here as we will share this description. 
        Access with slash at the beginning -->
   <arg name="model"/>
-  <arg name="nr"/>
+  <arg name="followers"/>
   <param name="model" value="$(arg model)"/>
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
   <arg name="ns"/>
@@ -13,16 +13,16 @@
     <include file="$(find swarmbots)/launch/one_robot.launch" >
       <arg name="robot_name" value="$(arg ns)" />
       <arg name="x_pos" value="0.0" />
-      <arg name="y_pos" value="-1.0" />
+      <arg name="y_pos" value="$(arg followers)" />
       <arg name="z_pos" value="0.0" />
     </include>
     <node pkg="swarmbots" type="tf_listener.py" name="$(arg ns)_listener" output="screen" />
   </group>
 
   <!-- recursively start new node -->
-  <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('nr') - 1 > 0)">
-    <arg name="nr" value="$(eval arg('nr') - 1)"/>
+  <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('followers') - 1 >= 0)">
+    <arg name="followers" value="$(eval arg('followers') - 1)"/>
     <arg name="model" value="$(arg model)"/>
-    <arg name="ns" value="robot$(arg nr)"/>
+    <arg name="ns" value="robot$(arg followers)"/>
   </include>
 </launch>
