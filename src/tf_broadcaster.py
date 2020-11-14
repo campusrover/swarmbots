@@ -23,6 +23,8 @@ def handle_robot_pose(msg, robot_name):
 
 rospy.init_node('tf_broadcaster')
 robot_name = rospy.get_namespace()[1:-1]
+# remove this depending on if you have tf prefix
+# robot_name += '_tf'
 rospy.Subscriber('odom',
                      Odometry,
                      handle_robot_pose,

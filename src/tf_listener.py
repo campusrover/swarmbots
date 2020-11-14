@@ -15,11 +15,14 @@ if __name__ == '__main__':
     listener = tf2_ros.TransformListener(tfBuffer)
 
     robot_name = rospy.get_namespace()[1:-1]
+    # remove this depending on if you have tf prefix
+    # robot_name += '_tf'
     robot_vel = rospy.Publisher('cmd_vel', geometry_msgs.msg.Twist, queue_size=1)
 
     rate = rospy.Rate(10.0)
     while not rospy.is_shutdown():
         try:
+            # tf prefix
             trans = tfBuffer.lookup_transform(robot_name + '/odom', 'swarmboss/odom', rospy.Time())
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rate.sleep()
