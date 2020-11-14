@@ -1,6 +1,6 @@
 <launch>
-    <arg name="robot_name"/>
-    <arg name="x_pos" default="0.0"/>
+  <arg name="robot_name"/>
+  <arg name="x_pos" default="0.0"/>
   <arg name="y_pos" default="0.0"/>
   <arg name="z_pos" default="0.0"/>
 
@@ -10,7 +10,7 @@
     <node pkg="robot_state_publisher" type="robot_state_publisher" 
           name="robot_state_publisher" output="screen"/>
 
-  <node name="tf_broadcaster" pkg="swarmbots" type="tf_broadcaster.py" respawn="false" output="screen" />
+  <node name="$(arg robot_name)_broadcaster" pkg="swarmbots" type="tf_broadcaster.py" respawn="false" output="screen" />
     <!-- The odometry estimator, throttling, fake laser etc. go here -->
     <!-- All the stuff as from usual robot launch file -->
 </launch>
