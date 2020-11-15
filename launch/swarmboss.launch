@@ -1,12 +1,5 @@
 <launch>
-  <!-- No namespace here as we will share this description. 
-       Access with slash at the beginning -->
-  <arg name="model"/>
-  <param name="model" value="$(arg model)"/>
-  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
-
-
-  <!-- BEGIN Swarm Boss -->
+  <!-- BEGIN swarmboss -->
   <group ns="swarmboss">
     <param name="tf_prefix" value="swarmboss" />
     <include file="$(find swarmbots)/launch/one_robot.launch" >

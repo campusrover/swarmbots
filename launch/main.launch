@@ -1,9 +1,12 @@
 <launch>
   <param name="/use_sim_time" value="true" />
   <!-- need to declare model up here before passing into the include file! -->
-  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi, burger_for_autorace]"/>
   <arg name="world" default="empty"/>
   <arg name="followers" default="2"/>
+  <!-- set model and robot_description for all spawned robots -->
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi, burger_for_autorace]"/>
+  <param name="model" value="$(arg model)"/>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
 
   <!-- start world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -15,16 +18,12 @@
     <arg name="debug" value="false"/>
   </include> 
 
-  <!-- include Swarm Boss -->
-  <include file="$(find swarmbots)/launch/swarmboss.launch">
-    <!-- pass model of robot into robots.launch file getting $(arg model) from command line, which launches the urdf -->
-    <arg name="model" value="$(arg model)"/>
-  </include>
+  <!-- start swarmboss -->
+  <include file="$(find swarmbots)/launch/swarmboss.launch"/>
 
-  <!-- recursively start new node -->
-  <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('followers') - 1 >= 0)">
-    <arg name="followers" value="$(eval arg('followers') - 1)"/>
-    <arg name="model" value="$(arg model)"/>
+  <!-- start first follower robot -->
+  <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('followers') > 0)">
+    <arg name="followers" value="$(arg followers)"/>
     <arg name="ns" value="robot$(arg followers)"/>
   </include>
 </launch>
