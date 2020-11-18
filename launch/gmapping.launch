@@ -1,0 +1,13 @@
+<launch>
+<!-- Right now the # of maps are entered semi-manually by entering # of followers. Will fix later if time willing -->
+<arg name="followers" default="2"/>
+
+<include file="$(find swarmbots)/launch/multi_turtlebot3_slam.launch">
+<arg name="ns" value="/swarmboss"/>
+</include>
+
+<include file="$(find swarmbots)/launch/multi_turtlebot3_slam.launch" if="$(eval arg('followers') > 0)">
+    <arg name="ns" value="/$(arg followers)"/>
+  </include>
+
+</launch>
