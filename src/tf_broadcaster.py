@@ -8,7 +8,6 @@ import tf2_ros
 import geometry_msgs.msg
 from nav_msgs.msg import Odometry
 
-
 def handle_robot_pose(msg, robot_name):
     br = tf2_ros.TransformBroadcaster()
     t = geometry_msgs.msg.TransformStamped()
@@ -22,14 +21,11 @@ def handle_robot_pose(msg, robot_name):
     try:
         # tf prefix
         trans = tfBuffer.lookup_transform(robot_name + '/odom', robot_name + '/map', rospy.Time())
-        print robot_name, "found map to odom tf"
+        # print robot_name, "found map to odom tf"
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
         t.child_frame_id = robot_name + '/odom'
-        print e
-    
+        # print e
     br.sendTransform(t)
-
-
 
 rospy.init_node('tf_broadcaster')
 tfBuffer = tf2_ros.Buffer()

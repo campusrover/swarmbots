@@ -11,7 +11,7 @@
       <arg name="y_pos" value="$(arg followers)" />
       <arg name="z_pos" value="0.0" />
     </include>
-    <node pkg="swarmbots" type="tf_listener.py" name="tf_listener" output="screen" />
+    <node pkg="swarmbots" type="tf_listener.py" name="tf_listener" respawn="true" output="screen" />
   </group>
 
   <!-- recursively start robot[#-1] -->

@@ -33,9 +33,9 @@ if __name__ == '__main__':
         if calc_magnitude(trans.transform.translation) > .8:
             msg.angular.z = 4 * math.atan2(trans.transform.translation.y, trans.transform.translation.x)
             msg.linear.x = 0.5 * math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
-            # make it not go too fast... gotta go slow
-            # commenting out for now bc it doesn't go around corners good without some wall avoidance
-            # msg.linear.x = min(0.5, msg.linear.x)
+            # control speed a little
+            # commenting out for now bc it doesn't go around corners well without some wall avoidance
+            msg.linear.x = min(0.5, msg.linear.x)
         
         robot_vel.publish(msg)
 
