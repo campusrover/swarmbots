@@ -7,5 +7,5 @@
   <!-- for each robot: spawn in gazebo, start robot_state_publisher, and broadcaster -->
   <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model $(arg robot_name) -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param /robot_description" />
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen" />
-  <node name="tf_broadcaster" pkg="swarmbots" type="tf_broadcaster.py" respawn="false" output="screen" />
+  <node name="tf_broadcaster" pkg="swarmbots" type="tf_broadcaster.py" respawn="true" output="screen" />
 </launch>

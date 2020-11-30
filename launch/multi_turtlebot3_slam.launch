@@ -1,5 +1,5 @@
 <launch>
-  <arg name="ns" default="swarmboss"/>
+  <arg name="ns" default="/swarmboss"/>
 
   <!-- Gmapping -->
   <node pkg="gmapping" type="slam_gmapping" name="turtlebot3_slam_gmapping" output="screen" ns="$(arg ns)">
