@@ -20,12 +20,9 @@ def handle_robot_pose(msg, robot_name):
     t.transform.rotation = msg.pose.pose.orientation
 
     try:
-        # tf prefix
         trans = tfBuffer.lookup_transform(robot_name + '/odom', robot_name + '/map', rospy.Time())
-        print robot_name, "found map to odom tf"
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
         t.child_frame_id = robot_name + '/odom'
-        print e
     
     br.sendTransform(t)
 
