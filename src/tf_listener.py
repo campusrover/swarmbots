@@ -47,7 +47,7 @@ def follow():
         msg.linear.x = 0.5 * math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
         # make it not go too fast... gotta go slow
         # commenting out for now bc it doesn't go around corners good without some wall avoidance
-        # msg.linear.x = min(0.5, msg.linear.x)
+        msg.linear.x = min(0.5, msg.linear.x)
     
     return msg
     
@@ -96,7 +96,6 @@ if __name__ == '__main__':
 
     rate = rospy.Rate(10.0)
     while not rospy.is_shutdown():
-<<<<<<< HEAD
         print_state()
 
         if min(g_ranges['F']) < MIN_WALL_DIST:
@@ -112,23 +111,6 @@ if __name__ == '__main__':
             msg = lead()
         else:
             print('state not recognized')
-=======
-        try:
-            # tf prefix
-            trans = tfBuffer.lookup_transform(robot_name + '/odom', 'swarmboss/odom', rospy.Time())
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rate.sleep()
-            continue
-
-        msg = geometry_msgs.msg.Twist()
-
-        if calc_magnitude(trans.transform.translation) > .8:
-            msg.angular.z = 4 * math.atan2(trans.transform.translation.y, trans.transform.translation.x)
-            msg.linear.x = 0.5 * math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
-            # control speed a little
-            # commenting out for now bc it doesn't go around corners well without some wall avoidance
-            msg.linear.x = min(0.5, msg.linear.x)
->>>>>>> 2738f038053fc3560acc8c0634cffc4af15136ce
         
         if msg is not None: # do not override previous cmd_vel if msg is None
             cmd_vel_pub.publish(msg)
