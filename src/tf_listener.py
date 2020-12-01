@@ -46,13 +46,13 @@ def follow():
     # calculate distance
     dist =  math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
 
-    if calc_magnitude(trans.transform.translation) > .8:
-        msg.linear.x = 0.5 * dist
-        # make it not go too fast... gotta go slow
-        # commenting out for now bc it doesn't go around corners good without some wall avoidance
-        msg.linear.x = min(0.5, msg.linear.x)
+    # if calc_magnitude(trans.transform.translation) > .8:
 
-
+    
+    msg.linear.x = 0.5 * dist
+    # make it not go too fast... gotta go slow
+    # commenting out for now bc it doesn't go around corners good without some wall avoidance
+    msg.linear.x = min(0.2, msg.linear.x)
 
     # calculate angle
     # this one turns them in the direction away from the leader.
@@ -60,19 +60,19 @@ def follow():
     # this is the following direction
     approach_angle = 4 * math.atan2(trans.transform.translation.y, trans.transform.translation.x)
     
+
     # meters to stay apart
-    social_distance = 3.0
+    SOCIAL_DISTANCE = 0.5
     # stay away if approaching subject closer than social distancing meters!
-    if dist < social_distance:
+    if dist < SOCIAL_DISTANCE:
         msg.angular.z = avoid_angle
-    # else if it's about the same number, stay put
-    elif round(dist, 1) == social_distance:
+    # else if it's about the same dist, stay put
+    elif round(dist, 1) == SOCIAL_DISTANCE:
         msg.angular.z = 0
         msg.linear.x = 0
     # continue to follow from a safe distance
     else:
         msg.angular.z = approach_angle
-        msg.linear.x = dist
 
     
     return msg
