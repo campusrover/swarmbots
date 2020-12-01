@@ -56,9 +56,9 @@ def follow():
 
     # calculate angle
     # this one turns them in the direction away from the leader.
-    avoid_angle = 4 * math.atan2(-trans_t4.transform.translation.y, -trans_t4.transform.translation.x)
+    avoid_angle = 4 * math.atan2(-trans.transform.translation.y, -trans.transform.translation.x)
     # this is the following direction
-    approach_angle = 4 * math.atan2(trans_t4.transform.translation.y, trans_t4.transform.translation.x)
+    approach_angle = 4 * math.atan2(trans.transform.translation.y, trans.transform.translation.x)
     
     # meters to stay apart
     social_distance = 3.0
@@ -124,10 +124,8 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         print_state()
 
-        if min(g_ranges['F']) < MIN_WALL_DIST:
-            g_state = 'avoid obstacle'
-        elif min(g_ranges.values()) >= MIN_WALL_DIST:
-            g_state = 'follow'
+        # temp placeholder, always follow
+        g_state = 'follow'
 
         if g_state == 'follow':
             msg = follow()
