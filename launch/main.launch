@@ -18,12 +18,10 @@
     <arg name="debug" value="false"/>
   </include> 
 
-  <!-- start swarmboss -->
-  <include file="$(find swarmbots)/launch/swarmboss.launch"/>
-
-  <!-- start first follower robot -->
-  <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('followers') > 0)">
+  <!-- start first robot -->
+  <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('followers') >= 0)">
     <arg name="followers" value="$(arg followers)"/>
-    <arg name="ns" value="robot$(arg followers)"/>
+    <arg name="ns" value="swarmboss"/>
+    <arg name="state" value="lead"/>
   </include>
 </launch>
