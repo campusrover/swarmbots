@@ -1,17 +1,17 @@
 <launch>
-  <arg name="followers"/>
-  <arg name="ns"/>
+  <arg name="followers" />
+  <arg name="ns" />
 
   <!-- BEGIN robot[#] -->
   <group ns="$(arg ns)">
     <param name="tf_prefix" value="$(arg ns)" />
     <include file="$(find swarmbots)/launch/one_robot.launch" >
+      <arg name="state" value="follow" />
       <arg name="robot_name" value="$(arg ns)" />
       <arg name="x_pos" value="0.0" />
       <arg name="y_pos" value="$(arg followers)" />
       <arg name="z_pos" value="0.0" />
     </include>
-    <node pkg="swarmbots" type="tf_listener.py" name="tf_listener" respawn="true" output="screen" />
   </group>
 
   <!-- recursively start robot[#-1] -->

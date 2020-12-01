@@ -18,7 +18,9 @@ def scan_callback(msg):
     g_ranges['FR'] = min(msg.ranges[345:355])
 
 def odom_callback(msg):
-    print('odom callback')
+    global g_angular_vel, g_linear_vel
+    g_angular_vel = msg.twist.twist.angular.z
+    g_linear_vel = msg.twist.twist.linear.x
 
 # [HELPERS]
 def calc_magnitude(vector):
@@ -27,6 +29,8 @@ def calc_magnitude(vector):
 def print_state():
     print('*** ' + robot_name + ' ***')
     print('State: ' + g_state)
+    print('Linear vel: ' + str(g_linear_vel))
+    print('Angular vel: ' + str(g_angular_vel))
     print('Ranges:')
     print('\tF: ' + str(g_ranges['F']))
     print('\tL: ' + str(g_ranges['L']))
@@ -42,12 +46,11 @@ def follow():
         return # exceptions may happen once in a while, so don't override existing Twist command
 
     msg = Twist()
-
     if calc_magnitude(trans.transform.translation) > .8:
         msg.linear.x = 0.5 * math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
         # make it not go too fast... gotta go slow
         # commenting out for now bc it doesn't go around corners good without some wall avoidance
-        msg.linear.x = min(0.5, msg.linear.x)
+        # msg.linear.x = min(0.5, msg.linear.x)
     
     return msg
     
@@ -56,11 +59,17 @@ def avoid_obstacle():
     # use map if exists
     # if not, wall-follow
     # if g_ranges['FL'] < MIN_WALL_DIST and g_ranges['FR'] < MIN_WALL_DIST:
-    # here
+    print('avoid obstacle?!')
     return Twist()
     
 def lead():
-    return Twist()
+    msg = Twist()
+    # check whether anything is too close
+    if g_ranges['F'] < MIN_WALL_DIST:
+        msg.angular.z = MAX_ANGULAR_VEL
+    else: # drive forward
+        msg.linear.x = MAX_LINEAR_VEL
+    return msg
 
 # [STATE VARIABLES]
 g_state = 'follow' # [follow, avoid obstacle, lead]
@@ -71,8 +80,12 @@ g_ranges = {
     'FL': float('inf'), # [6:15]
     'FR': float('inf') # [345:354]
 }
+g_angular_vel = 0
+g_linear_vel = 0
 
 # [CONSTANTS]
+MAX_LINEAR_VEL = .4
+MAX_ANGULAR_VEL = math.pi/4
 MIN_WALL_DIST = .4
 
 # [SUBSCRIBERS]
@@ -92,16 +105,15 @@ if __name__ == '__main__':
     robot_name = rospy.get_namespace()[1:-1]
     # remove this depending on if you have tf prefix
     # robot_name += '_tf'
+
+    # get initial state
+    g_state = rospy.get_param('~state', 'follow')
+
     robot_vel = rospy.Publisher('cmd_vel', Twist, queue_size=1)
 
     rate = rospy.Rate(10.0)
     while not rospy.is_shutdown():
         print_state()
-
-        if min(g_ranges['F']) < MIN_WALL_DIST:
-            g_state = 'avoid obstacle'
-        elif min(g_ranges.values()) >= MIN_WALL_DIST:
-            g_state = 'follow'
 
         if g_state == 'follow':
             msg = follow()
