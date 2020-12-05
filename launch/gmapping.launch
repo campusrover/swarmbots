@@ -2,22 +2,17 @@
 <!-- Right now the # of maps are entered semi-manually by entering # of followers. Will fix later if time willing -->
 <arg name='robots' default="2"/>
 
-
-
-
 <!-- Follower maps -->
 <arg name="newrobots" value="$(eval arg('robots') - 1)"/>
-<include file="$(find swarmbots)/launch/multi_turtlebot3_slam.launch" if="$(eval arg('robots') > 0)">
+<group ns="robot$(arg newrobots)">
+    <include file="$(find swarmbots)/launch/multi_turtlebot3_slam.launch" if="$(eval arg('robots') > 0)">
     <arg name="ns" value="/robot$(arg newrobots)"/>
-</include>
+    </include>
+</group>
+
 <!-- Recursively launch this file again for the rest of the bots? -->
 <include file="$(find swarmbots)/launch/gmapping.launch" if="$(eval arg('robots') > 1)">
-    <arg name="followers" value="$(eval arg('robots') - 1)"/>
+    <arg name="robots" value="$(eval arg('robots') - 1)"/>
 </include>
-
-
-<include file="$(find swarmbots)/launch/map_merge.launch" />
-
-<node pkg="swarmbots" type="tf_map_merge.py" respawn="false" name="tf_map_merge" output="screen"/>
 
 </launch>

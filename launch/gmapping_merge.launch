@@ -1,0 +1,13 @@
+<launch>
+
+<arg name="robots" default="2"/>
+
+<include file="$(find swarmbots)/launch/gmapping.launch">
+    <arg name="robots" value="$(arg robots)"/>
+</include>
+
+<include file="$(find swarmbots)/launch/map_merge.launch" />
+
+<node pkg="swarmbots" type="tf_map_merge.py" respawn="false" name="tf_map_merge" output="screen"/>
+
+</launch>
