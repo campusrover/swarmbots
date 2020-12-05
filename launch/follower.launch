@@ -4,6 +4,13 @@
 
   <!-- BEGIN robot[#] -->
   <group ns="$(arg ns)">
+  
+    <!-- for map_merge init poses -->
+    <param name="map_merge/init_pose_x" value="0.0" />
+    <param name="map_merge/init_pose_y" value="$(arg followers)" />
+    <param name="map_merge/init_pose_z" value="0.0" />
+    <param name="map_merge/init_pose_yaw" value="0.0" />
+    
     <param name="tf_prefix" value="$(arg ns)" />
     <include file="$(find swarmbots)/launch/one_robot.launch">
       <arg name="robot_name" value="$(arg ns)" />

@@ -1,0 +1,5 @@
+<launch>
+
+<node pkg="swarmbots" type="patrol.py" respawn="false" name="patrol" output="screen"/>
+
+</launch>

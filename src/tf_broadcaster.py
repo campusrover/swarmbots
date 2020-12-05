@@ -28,8 +28,7 @@ rospy.init_node('tf_broadcaster')
 tfBuffer = tf2_ros.Buffer()
 listener = tf2_ros.TransformListener(tfBuffer)
 robot_name = rospy.get_namespace()[1:-1]
-# remove this depending on if you have tf prefix
-# robot_name += '_tf'
+
 rospy.Subscriber('odom',
                      Odometry,
                      handle_robot_pose,
