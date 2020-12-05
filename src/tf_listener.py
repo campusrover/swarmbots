@@ -7,6 +7,7 @@ import geometry_msgs.msg
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
+from swarmbots.msg import Status
 
 # [CALLBACKS]
 def scan_callback(msg):
@@ -21,6 +22,11 @@ def odom_callback(msg):
     global g_angular_vel, g_linear_vel
     g_angular_vel = msg.twist.twist.angular.z
     g_linear_vel = msg.twist.twist.linear.x
+
+def status_callback(msg):
+    global g_leader
+    if msg.status == 'leader':
+        g_leader = msg.robot_name
 
 # [HELPERS]
 def calc_magnitude(vector):
@@ -41,7 +47,7 @@ def print_state():
 # [STATE FUNCTIONS]
 def follow():
     try:
-        trans = tfBuffer.lookup_transform(robot_name + '/odom', 'swarmboss/odom', rospy.Time())
+        trans = tfBuffer.lookup_transform(robot_name + '/odom', g_leader + '/odom', rospy.Time())
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         return # exceptions may happen once in a while, so don't override existing Twist command
 
@@ -89,15 +95,17 @@ def avoid_obstacle():
     return Twist()
     
 def lead():
-    msg = Twist()
+    vel_msg = Twist()
     # check whether anything is too close
     if g_ranges['F'] < MIN_WALL_DIST:
-        msg.angular.z = MAX_ANGULAR_VEL
+        vel_msg.angular.z = MAX_ANGULAR_VEL
     else: # drive forward
-        msg.linear.x = MAX_LINEAR_VEL
-    return msg
+        vel_msg.linear.x = MAX_LINEAR_VEL
+    return vel_msg
 
 # [STATE VARIABLES]
+robot_name = rospy.get_namespace()[1:-1]
+g_leader = robot_name
 g_state = 'follow' # [follow, avoid obstacle, lead]
 g_ranges = {
     'F': float('inf'), # [355:] + [:5]
@@ -117,6 +125,7 @@ MIN_WALL_DIST = .4
 # [SUBSCRIBERS]
 scan_sub = rospy.Subscriber('scan', LaserScan, scan_callback)
 odom_sub = rospy.Subscriber('odom', Odometry, odom_callback)
+status_sub = rospy.Subscriber('/status', Status, status_callback)
 
 # [PUBLISHERS]
 cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
@@ -128,27 +137,21 @@ if __name__ == '__main__':
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
 
-    robot_name = rospy.get_namespace()[1:-1]
-    # remove this depending on if you have tf prefix
-    # robot_name += '_tf'
-
-    # get initial state
-    g_state = rospy.get_param('~state', 'follow')
-
-    robot_vel = rospy.Publisher('cmd_vel', Twist, queue_size=1)
-
     rate = rospy.Rate(10.0)
     while not rospy.is_shutdown():
         print_state()
 
+        if g_leader == robot_name:
+            g_state = 'lead'
+        else:
+            g_state = 'follow'
+
         if g_state == 'follow':
             msg = follow()
-        elif g_state == 'avoid obstacle':
-            msg = avoid_obstacle()
         elif g_state == 'lead':
             msg = lead()
         else:
-            print('state not recognized')
+            rospy.logerr('%s has unknown state %s', robot_name, g_state)
         
         if msg is not None: # do not override previous cmd_vel if msg is None
             cmd_vel_pub.publish(msg)

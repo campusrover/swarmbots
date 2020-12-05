@@ -21,7 +21,6 @@
   <!-- start first robot -->
   <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('followers') >= 0)">
     <arg name="followers" value="$(arg followers)"/>
-    <arg name="ns" value="swarmboss"/>
-    <arg name="state" value="lead"/>
+    <arg name="ns" value="robot$(arg followers)"/>
   </include>
 </launch>

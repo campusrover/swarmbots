@@ -1,12 +1,10 @@
 <launch>
   <arg name="followers" />
   <arg name="ns" />
-  <arg name="state" />
 
   <!-- BEGIN robot[#] -->
   <group ns="$(arg ns)">
     <param name="tf_prefix" value="$(arg ns)" />
-    <param name="~state" value="$(arg state)" />
     <include file="$(find swarmbots)/launch/one_robot.launch">
       <arg name="robot_name" value="$(arg ns)" />
       <arg name="x_pos" value="0.0" />
@@ -20,6 +18,5 @@
   <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('new_followers') >= 0)">
     <arg name="followers" value="$(arg new_followers)" />
     <arg name="ns" value="robot$(arg new_followers)" />
-    <arg name="state" value="follow" />
   </include>
 </launch>
