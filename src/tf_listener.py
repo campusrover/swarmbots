@@ -57,14 +57,8 @@ def follow():
 
     # calculate distance
     dist =  math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
-
-    # if calc_magnitude(trans.transform.translation) > .8:
-
     msg.linear.x = 0.5 * dist
-    # make it not go too fast... gotta go slow
-    # commenting out for now bc it doesn't go around corners good without some wall avoidance
     msg.linear.x = min(0.2, msg.linear.x)
-
     # calculate angle
     # this one turns them in the direction away from the leader.
     avoid_angle = 4 * math.atan2(-trans.transform.translation.y, -trans.transform.translation.x)
