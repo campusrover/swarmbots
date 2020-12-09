@@ -24,7 +24,7 @@ def odom_callback(msg):
     g_linear_vel = msg.twist.twist.linear.x
 
 def state_callback(msg):
-    global g_leader
+    global g_leader, g_state
     if msg.state == 'lead':
         g_leader = msg.robot_name
     if msg.robot_name == robot_name:
