@@ -31,9 +31,9 @@
     <arg name="robots" value="$(arg robots)"/>
   </include>
 
-  <!-- start move base -->
+  <!-- start move base 
   <include file="$(find swarmbots)/launch/swarmbots_move_base.launch">
     <arg name="robots" value="$(arg robots)"/>
-  </include>
+  </include>-->
 
 </launch>

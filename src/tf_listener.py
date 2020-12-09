@@ -60,6 +60,7 @@ def print_state():
     print('\tFL: ' + str(g_ranges['FL']))
     print('\tFR: ' + str(g_ranges['FR']))
     print('\tR: ' + str(g_ranges['R']))
+    print('\tB: ' + str(g_ranges['B']))
 
 # [STATE FUNCTIONS]
 def follow():
@@ -89,18 +90,21 @@ def follow():
     # continue to follow from a safe distance
     else:
         msg.angular.z = approach_angle
-    # if wall ahead, try to get unstuck first
+    # if wall ahead, try to get unstuck with robust wandering first
     if wall_ahead:
-        msg.linear.x = 0
-        msg.angular.z = MAX_ANGULAR_VEL
+        return wander()
 
     return msg
     
 
 def wander():
     vel_msg = Twist()
-    # check whether anything is too close
-    if g_ranges['F'] < MIN_WALL_DIST:
+    # check if anything in front or back is too close to turn properly
+    if min(g_ranges['F'], g_ranges['FL'], g_ranges['FR']) < TOO_CLOSE_TO_TURN:
+        vel_msg.linear.x = -MAX_LINEAR_VEL
+    elif g_ranges['B'] < TOO_CLOSE_TO_TURN:
+        vel_msg.linear.x = MAX_LINEAR_VEL
+    elif g_ranges['F'] < MIN_WALL_DIST: # check if anything in front is too close (will collide if continue moving)
         vel_msg.angular.z = MAX_ANGULAR_VEL
     else: # drive forward
         vel_msg.linear.x = MAX_LINEAR_VEL
@@ -154,7 +158,8 @@ g_ranges = {
     'L': float('inf'), # [16:105]
     'R': float('inf'), # [255:344]
     'FL': float('inf'), # [6:15]
-    'FR': float('inf') # [345:354]
+    'FR': float('inf'), # [345:354]
+    'B': float('inf') # [105:255]
 }
 g_angular_vel = 0
 g_linear_vel = 0
