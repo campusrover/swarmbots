@@ -5,25 +5,27 @@ import math
 import tf2_ros
 import actionlib
 import geometry_msgs.msg
-from geometry_msgs.msg import Twist, PoseStamped
+from geometry_msgs.msg import Twist, PoseStamped, Pose
 import tf2_geometry_msgs
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
-<<<<<<< Updated upstream
 from swarmbots.msg import State
-=======
-from swarmbots.msg import Status
+from std_msgs.msg import String
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
->>>>>>> Stashed changes
 
 # [CALLBACKS]
 def scan_callback(msg):
+    global wall_ahead
     # todo: make this work for any lidar. this depends on 1 value per degree
     g_ranges['F'] = min(msg.ranges[355:] + msg.ranges[:6])
     g_ranges['FL'] = min(msg.ranges[6:16])
     g_ranges['L'] = min(msg.ranges[16:105])
     g_ranges['R'] = min(msg.ranges[255:345])
     g_ranges['FR'] = min(msg.ranges[345:355])
+    if g_ranges['F'] <= MIN_WALL_DIST:
+        wall_ahead = True
+    else:
+        wall_ahead = False
 
 def odom_callback(msg):
     global g_angular_vel, g_linear_vel, g_pose_stamped
@@ -35,8 +37,13 @@ def state_callback(msg):
     global g_leader, g_state
     if msg.state == 'lead':
         g_leader = msg.robot_name
+        g_leader_pose = msg.pose
     if msg.robot_name == robot_name:
         g_state = msg.state
+
+def command_callback(msg):
+    global current_command
+    current_command = msg.data
 
 # [HELPERS]
 def calc_magnitude(vector):
@@ -56,35 +63,36 @@ def print_state():
 
 # [STATE FUNCTIONS]
 def follow():
-    global tfBuffer
+    global tfBuffer, wall_ahead
     try:
         trans = tfBuffer.lookup_transform(robot_name + '/odom', g_leader + '/odom', rospy.Time())
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         return # exceptions may happen once in a while, so don't override existing Twist command
-
     msg = Twist()
-    # calculate distance
+    # calculate distance between leader and robot
     dist =  math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
-    msg.linear.x = 0.5 * dist
-    msg.linear.x = min(0.2, msg.linear.x)
-    # calculate angle
-    # this one turns them in the direction away from the leader.
+    msg.linear.x = min(MAX_LINEAR_VEL, 0.5 * dist)
+    # this rotation turns them in the direction away from the leader.
     avoid_angle = 4 * math.atan2(-trans.transform.translation.y, -trans.transform.translation.x)
     # this is the following direction
     approach_angle = 4 * math.atan2(trans.transform.translation.y, trans.transform.translation.x)
     
     # meters to stay apart
-    SOCIAL_DISTANCE = 0.5
+    SOCIAL_DIST = 0.5
     # stay away if approaching subject closer than social distancing meters!
-    if dist < SOCIAL_DISTANCE:
+    if dist < SOCIAL_DIST:
         msg.angular.z = avoid_angle
     # else if it's about the same dist, stay put
-    elif round(dist, 1) == SOCIAL_DISTANCE:
+    elif round(dist, 1) == SOCIAL_DIST:
         msg.angular.z = 0
         msg.linear.x = 0
     # continue to follow from a safe distance
     else:
         msg.angular.z = approach_angle
+    # if wall ahead, try to get unstuck first
+    if wall_ahead:
+        msg.linear.x = 0
+        msg.angular.z = MAX_ANGULAR_VEL
 
     return msg
     
@@ -100,16 +108,13 @@ def avoid_obstacle():
     new_pose_stamped = tf2_geometry_msgs.do_transform_pose(g_pose_stamped, trans)
     # TODO: also need to check that map exists
     goal_pose = MoveBaseGoal()
-    goal_pose.target_pose.header.frame_id = 'map_merge/map'
+    goal_pose.target_pose.header.frame_id = 'map'
     goal_pose.target_pose.pose = new_pose_stamped.pose
     
     # idk how this works
     client.send_goal(goal_pose)
     # client.wait_for_result()
     
-    
-    # if not, wall-follow
-    # if g_ranges['FL'] < MIN_WALL_DIST and g_ranges['FR'] < MIN_WALL_DIST:
     print('avoid obstacle?!')
     return Twist()
 
@@ -122,12 +127,48 @@ def wander():
         vel_msg.linear.x = MAX_LINEAR_VEL
     return vel_msg
 
+# robot tries to stay as far away from leader as possible, and wanders/explores 
+# if significantly far away
+def disperse():
+    global tfBuffer, wall_ahead, g_leader_pose
+    try:
+        trans = tfBuffer.lookup_transform(robot_name + '/odom', g_leader + '/odom', rospy.Time())
+    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+        return # exceptions may happen once in a while, so don't override existing Twist command
+    # TODO: handle staying away from other followers also.
+    msg = Twist()
+    # calculate distance
+    dist =  math.sqrt(trans.transform.translation.x ** 2 + trans.transform.translation.y ** 2)
+    # this turns them in the direction away from the leader.
+    avoid_angle = 4 * math.atan2(-trans.transform.translation.y, -trans.transform.translation.x)
+    # meters to stay apart before 'exploring'
+    DISPERSE_DIST = 5
+    # stay away if approaching subject closer than social distancing meters!
+    if dist < DISPERSE_DIST:
+        msg.angular.z = avoid_angle
+        msg.linear.x = MAX_LINEAR_VEL
+    # else if it's about the same dist, stay put
+    elif round(dist, 1) == DISPERSE_DIST:
+        msg.angular.z = 0
+        msg.linear.x = 0
+    # disperse and wander
+    else:
+        msg.linear.x = MAX_LINEAR_VEL
+
+    # if can't move past wall ahead, rotate until no wall
+    if wall_ahead:
+        msg.linear.x = 0
+        msg.angular.z = MAX_ANGULAR_VEL
+
+    return msg
+
 # [INITIALIZE NODE]
 rospy.init_node('tf_listener')
 
 # [STATE VARIABLES]
 robot_name = rospy.get_namespace()[1:-1]
 g_leader = robot_name
+g_leader_pose = Pose()
 g_state = 'follow' # [follow, wander, lead]
 g_ranges = {
     'F': float('inf'), # [355:] + [:5]
@@ -139,21 +180,23 @@ g_ranges = {
 g_angular_vel = 0
 g_linear_vel = 0
 g_pose_stamped = PoseStamped()
+wall_ahead = False
+current_command = 'follow'
 
 # [CONSTANTS]
 MAX_LINEAR_VEL = .4
 MAX_ANGULAR_VEL = math.pi/4
-MIN_WALL_DIST = .6
+MIN_WALL_DIST = .4
 
 # [SUBSCRIBERS]
 scan_sub = rospy.Subscriber('scan', LaserScan, scan_callback)
 odom_sub = rospy.Subscriber('odom', Odometry, odom_callback)
 state_sub = rospy.Subscriber('/state', State, state_callback)
+command_sub = rospy.Subscriber('/command', String, command_callback)
 
 # [PUBLISHERS]
 cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
 client = actionlib.SimpleActionClient(robot_name + '/move_base', MoveBaseAction) # move base action client
-# client.wait_for_server() # wait for it to start ig
 
 # [MAIN CONTROL LOOP]
 if __name__ == '__main__':
@@ -162,11 +205,16 @@ if __name__ == '__main__':
     listener = tf2_ros.TransformListener(tfBuffer)
 
     rate = rospy.Rate(10.0)
+
     while not rospy.is_shutdown():
+        rate.sleep()
         # print_state()
 
         if g_state == 'follow':
-            msg = follow()
+            if current_command == 'disperse':
+                msg = disperse()
+            else:
+                msg = follow()
         elif g_state == 'lead':
             msg = wander()
         elif g_state == 'dead':
@@ -176,5 +224,3 @@ if __name__ == '__main__':
         
         if msg is not None: # do not override previous cmd_vel if msg is None
             cmd_vel_pub.publish(msg)
-
-        rate.sleep()

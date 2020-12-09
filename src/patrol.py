@@ -39,8 +39,8 @@ waypoints = [
 # containing a location and a rotation. This is just to make the waypoints array
 # simpler.
 
-def goal_pose(pose):
-  global g_leader, g_pose
+def goal_pose():
+  global g_leader, g_pose_stamped
   goal_pose = MoveBaseGoal()
   try:
       trans = tfBuffer.lookup_transform('robot1/odom', 'robot0/odom', rospy.Time())
@@ -51,11 +51,15 @@ def goal_pose(pose):
   new_pose_stamped = tf2_geometry_msgs.do_transform_pose(g_pose_stamped, trans)
   # TODO: also need to check that map exists
   goal_pose = MoveBaseGoal()
-  goal_pose.target_pose.header.frame_id = 'map_merge/map'
+  goal_pose.target_pose.header.frame_id = 'map'
   goal_pose.target_pose.pose = new_pose_stamped.pose
-  
+  goal_pose.target_pose.orientation = g_pose_stamped.orientation
+  print(goal_pose)
   return goal_pose
 
+
+# A node called 'patrol' which is an action client to move_base
+rospy.init_node('patrol')
 
 
 # [SUBSCRIBERS]
@@ -65,32 +69,26 @@ status_sub = rospy.Subscriber('robot1/status', Status, status_callback)
 robot_name = rospy.get_namespace()[1:-1]
 g_leader = robot_name
 
+g_pose_stamped = PoseStamped()
+
 # Main program starts here
 if __name__ == '__main__':
 
-    # A node called 'patrol' which is an action client to move_base
-    rospy.init_node('patrol')
-
     rate = rospy.Rate(0.1)
 
-    g_pose_stamped = None
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
-
 
     client = actionlib.SimpleActionClient('robot1/move_base', MoveBaseAction)
 
     print("starting patrol")
-
+    goal_pose()
     # wait for action server to be ready
     client.wait_for_server()
 
     # Loop until ^c
     while not rospy.is_shutdown():
-
-        # repeat the waypoints over and over again
-        for pose in waypoints:
-            goal = goal_pose(pose)
-            print("Going for goal: ", goal)
-            client.send_goal(goal)
-            rate.sleep()
+        goal = goal_pose()
+        print("Going for goal: ", goal_pose())
+        client.send_goal(goal_pose())
+        rate.sleep()

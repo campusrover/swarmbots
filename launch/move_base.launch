@@ -18,7 +18,7 @@
     <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
     
     <rosparam file="$(find turtlebot3_navigation)/param/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find turtlebot3_navigation)/param/global_costmap_params.yaml" command="load" />
+    <!--<rosparam file="$(find turtlebot3_navigation)/param/global_costmap_params.yaml" command="load" />-->
     <rosparam file="$(find turtlebot3_navigation)/param/move_base_params.yaml" command="load" />
     
     <rosparam file="$(find turtlebot3_navigation)/param/dwa_local_planner_params_$(arg model).yaml" command="load" />
@@ -28,14 +28,14 @@
     <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
 
 
-    <param name="global_costmap/global_frame" value="map_merge/map"/>
-    <param name="global_costmap/static_map" value="true"/>
+    <param name="global_costmap/global_frame" value="map"/>
+    <param name="global_costmap/static_map" value="false"/>
     <param name="global_costmap/rolling_window" value="true"/>
     <param name="global_costmap/robot_base_frame" value="$(arg ns)/base_footprint"/>
     <param name="local_costmap/robot_base_frame" value="$(arg ns)/base_footprint"/>
-    <param name="local_costmap/global_frame" value="map_merge/map"/>
-    <param name="local_costmap/width" value="1"/>
-    <param name="local_costmap/height" value="1"/>
+    <param name="local_costmap/global_frame" value="map"/>
+    <param name="local_costmap/width" value="1.5"/>
+    <param name="local_costmap/height" value="1.5"/>
     <param name="local_costmap/track_unknown_space" value="true"/>
 
   </node>
