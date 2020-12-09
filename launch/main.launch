@@ -24,4 +24,16 @@
     <arg name="followers" value="$(arg newrobots)"/>
     <arg name="ns" value="robot$(arg newrobots)"/>
   </include>
+
+
+  <!-- start gmapping -->
+  <include file="$(find swarmbots)/launch/gmapping_merge.launch">
+    <arg name="robots" value="$(arg robots)"/>
+  </include>
+
+  <!-- start move base -->
+  <include file="$(find swarmbots)/launch/swarmbots_move_base.launch">
+    <arg name="robots" value="$(arg robots)"/>
+  </include>
+
 </launch>

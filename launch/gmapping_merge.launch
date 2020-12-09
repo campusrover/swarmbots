@@ -8,6 +8,6 @@
 
 <include file="$(find swarmbots)/launch/map_merge.launch" />
 
-<node pkg="swarmbots" type="tf_map_merge.py" respawn="false" name="tf_map_merge" output="screen"/>
+<node pkg="swarmbots" type="tf_map_merge.py" respawn="false" name="tf_map_merge" output="log"/>
 
 </launch>
