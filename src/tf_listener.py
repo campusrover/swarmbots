@@ -96,27 +96,6 @@ def follow():
 
     return msg
     
-def avoid_obstacle():
-    global g_state, robot_name, client, tfBuffer
-    # use map if exists
-    try:
-        trans = tfBuffer.lookup_transform(robot_name + '/odom', g_leader + '/odom', rospy.Time())
-    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-        return # exceptions may happen once in a while, so don't override existing Twist command
-    
-    # set goal pose as leader position TODO: make it stay 1m away from leader
-    new_pose_stamped = tf2_geometry_msgs.do_transform_pose(g_pose_stamped, trans)
-    # TODO: also need to check that map exists
-    goal_pose = MoveBaseGoal()
-    goal_pose.target_pose.header.frame_id = 'map'
-    goal_pose.target_pose.pose = new_pose_stamped.pose
-    
-    # idk how this works
-    client.send_goal(goal_pose)
-    # client.wait_for_result()
-    
-    print('avoid obstacle?!')
-    return Twist()
 
 def wander():
     vel_msg = Twist()
@@ -153,7 +132,7 @@ def disperse():
         msg.linear.x = 0
     # disperse and wander
     else:
-        msg.linear.x = MAX_LINEAR_VEL
+        return wander()
 
     # if can't move past wall ahead, rotate until no wall
     if wall_ahead:
@@ -187,6 +166,7 @@ current_command = 'follow'
 MAX_LINEAR_VEL = .4
 MAX_ANGULAR_VEL = math.pi/4
 MIN_WALL_DIST = .4
+TOO_CLOSE_TO_TURN = .15
 
 # [SUBSCRIBERS]
 scan_sub = rospy.Subscriber('scan', LaserScan, scan_callback)
@@ -207,7 +187,6 @@ if __name__ == '__main__':
     rate = rospy.Rate(10.0)
 
     while not rospy.is_shutdown():
-        rate.sleep()
         # print_state()
 
         if g_state == 'follow':
@@ -224,3 +203,4 @@ if __name__ == '__main__':
         
         if msg is not None: # do not override previous cmd_vel if msg is None
             cmd_vel_pub.publish(msg)
+        rate.sleep()
