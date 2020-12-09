@@ -9,5 +9,5 @@
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen" />
   <node pkg="swarmbots" type="tf_broadcaster.py" name="tf_broadcaster" respawn="true" output="screen" />
   <node pkg="swarmbots" type="tf_listener.py" name="tf_listener" respawn="true" output="screen" />
-  <node pkg="swarmbots" type="robot_status.py" name="robot_status" respawn="true" output="screen" />
+  <node pkg="swarmbots" type="robot_state.py" name="robot_state" respawn="true" output="screen" />
 </launch>

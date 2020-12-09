@@ -7,7 +7,7 @@ import geometry_msgs.msg
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
-from swarmbots.msg import Status
+from swarmbots.msg import State
 
 # [CALLBACKS]
 def scan_callback(msg):
@@ -23,12 +23,12 @@ def odom_callback(msg):
     g_angular_vel = msg.twist.twist.angular.z
     g_linear_vel = msg.twist.twist.linear.x
 
-def status_callback(msg):
+def state_callback(msg):
     global g_leader
-    if msg.status == 'lead':
+    if msg.state == 'lead':
         g_leader = msg.robot_name
     if msg.robot_name == robot_name:
-        g_state = msg.status
+        g_state = msg.state
 
 # [HELPERS]
 def calc_magnitude(vector):
@@ -127,7 +127,7 @@ MIN_WALL_DIST = .4
 # [SUBSCRIBERS]
 scan_sub = rospy.Subscriber('scan', LaserScan, scan_callback)
 odom_sub = rospy.Subscriber('odom', Odometry, odom_callback)
-status_sub = rospy.Subscriber('/status', Status, status_callback)
+state_sub = rospy.Subscriber('/state', State, state_callback)
 
 # [PUBLISHERS]
 cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
