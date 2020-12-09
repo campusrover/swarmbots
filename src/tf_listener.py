@@ -192,7 +192,7 @@ if __name__ == '__main__':
     rate = rospy.Rate(10.0)
 
     while not rospy.is_shutdown():
-        print_state()
+        # print_state()
 
         if g_state == 'follow':
             if current_command == 'disperse':
