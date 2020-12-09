@@ -25,8 +25,10 @@ def odom_callback(msg):
 
 def status_callback(msg):
     global g_leader
-    if msg.status == 'leader':
+    if msg.status == 'lead':
         g_leader = msg.robot_name
+    if msg.robot_name == robot_name:
+        g_state = msg.status
 
 # [HELPERS]
 def calc_magnitude(vector):
@@ -93,8 +95,8 @@ def avoid_obstacle():
     # if g_ranges['FL'] < MIN_WALL_DIST and g_ranges['FR'] < MIN_WALL_DIST:
     print('avoid obstacle?!')
     return Twist()
-    
-def lead():
+
+def wander():
     vel_msg = Twist()
     # check whether anything is too close
     if g_ranges['F'] < MIN_WALL_DIST:
@@ -106,7 +108,7 @@ def lead():
 # [STATE VARIABLES]
 robot_name = rospy.get_namespace()[1:-1]
 g_leader = robot_name
-g_state = 'follow' # [follow, avoid obstacle, lead]
+g_state = 'follow' # [follow, wander, lead]
 g_ranges = {
     'F': float('inf'), # [355:] + [:5]
     'L': float('inf'), # [16:105]
@@ -141,15 +143,12 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         print_state()
 
-        if g_leader == robot_name:
-            g_state = 'lead'
-        else:
-            g_state = 'follow'
-
         if g_state == 'follow':
             msg = follow()
         elif g_state == 'lead':
-            msg = lead()
+            msg = wander()
+        elif g_state == 'dead':
+            msg = wander()
         else:
             rospy.logerr('%s has unknown state %s', robot_name, g_state)
         
