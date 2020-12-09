@@ -2,7 +2,7 @@
 import rospy, math, random
 from swarmbots.msg import State
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import Point, Pose
 
 # [CALLBACKS]
 def state_callback(msg):
@@ -22,10 +22,11 @@ def state_callback(msg):
         rospy.logerr('%s has unknown state %s', msg.robot_name, msg.state)
 
 def odom_callback(msg):
-    global g_positions, g_positions_updated
+    global g_positions, g_positions_updated, g_pose
     if (rospy.Time.now() - g_positions_updated).to_sec() >= 1:
         g_positions = g_positions[1:] + [msg.pose.pose.position]
         g_positions_updated = rospy.Time.now()
+    g_pose = msg.pose.pose
 
 # [HELPERS]
 def is_moving():
@@ -47,7 +48,7 @@ g_leader_updated = rospy.Time.from_sec(0)
 g_follow = None
 g_positions = [Point(), Point(), Point(), Point(), Point()]
 g_positions_updated = rospy.Time.from_sec(0)
-
+g_pose = Pose() # current position of robot
 # [CONSTANTS]
 MIN_DIST_TRAVELED = .3
 
@@ -70,6 +71,7 @@ if __name__ == '__main__':
         state_msg = State()
         state_msg.robot_name = robot_name
         state_msg.header.stamp = rospy.Time.now()
+        state_msg.pose = g_pose
 
         if not is_moving():
             state_msg.state = 'dead'

@@ -94,10 +94,8 @@ def follow():
         msg.linear.x = 0
         msg.angular.z = MAX_ANGULAR_VEL
 
-    
     return msg
     
-
 
 def wander():
     vel_msg = Twist()
@@ -189,7 +187,6 @@ if __name__ == '__main__':
     rate = rospy.Rate(10.0)
 
     while not rospy.is_shutdown():
-        
         # print_state()
 
         if g_state == 'follow':
@@ -206,5 +203,4 @@ if __name__ == '__main__':
         
         if msg is not None: # do not override previous cmd_vel if msg is None
             cmd_vel_pub.publish(msg)
-            
         rate.sleep()

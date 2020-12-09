@@ -14,7 +14,7 @@ def handle_robot_pose():
     t = geometry_msgs.msg.TransformStamped()
 
     t.header.stamp = rospy.Time.now()
-    t.header.frame_id = 'map_merge/map'
+    t.header.frame_id = 'map'
     t.child_frame_id = "world"
     p = Pose()
     t.transform.translation = p.position
