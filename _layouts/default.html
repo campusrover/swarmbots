@@ -36,9 +36,19 @@
           <h1>{{ site.title | default: site.github.repository_name }}</h1>
           <p>{{ site.description | default: site.github.project_tagline }}</p>
           <hr>
+          <div id="toc">
+            <h3>Table of Contents</h2>
+            <ul>
+              <li><a href="{{ site.baseurl }}/index">Introduction</a></li>
+              <li><a href="{{ site.baseurl }}/what_was_created">What was created</a></li>
+              <li><a href="{{ site.baseurl }}/project_reflection">Project reflection</a></li>
+            </ul>
+          </div>
+          <hr>
           <span class="credits left">Project maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></span>
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/mattgraham">mattgraham</a></span>
         </div>
+
 
         {{ content }}
 
