@@ -1,19 +1,10 @@
 <launch>
-<!-- Right now the # of maps are entered semi-manually by entering # of followers. Will fix later if time willing -->
 <arg name='robots' default="2"/>
 
 <!-- map saver for map merge -->
 <node name="map_saver" pkg="map_server" type="map_saver"
     args="-f $(find swarmbots)/maps/merged_map"  if="$(eval arg('robots') == 1)" >
 </node>
-<!-- map saver for swarmboss 
-<group ns="swarmboss">
-    <node name="map_saver" pkg="map_server" type="map_saver"
-    args="-f $(find swarmbots)/map/swarmboss"
-    if="$(eval 1 >= arg('followers'))">
-        <param name="map" value="/swarmboss/dynamic_map"/>
-    </node>
-</group>-->
 
 <!-- map saver for current follower -->
 <arg name="newrobots" value="$(eval arg('robots') - 1)"/>
@@ -25,11 +16,9 @@
     </node>
 </group>
 
-
 <!-- recursion for followers -->
 <include file="$(find swarmbots)/launch/savemap.launch" if="$(eval arg('robots') > 0)">
     <arg name="robots" value="$(eval arg('robots') - 1)"/>
 </include>
-
 
 </launch> 

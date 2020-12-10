@@ -1,5 +1,5 @@
 <launch>
-  <param name="/use_sim_time" value="true" />
+  <!-- MAIN LAUNCH FILE-->
   <!-- need to declare model up here before passing into the include file! -->
   <arg name="world" default="empty"/>
   <arg name="robots" default="2"/>
@@ -8,10 +8,10 @@
   <param name="model" value="$(arg model)"/>
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
 
-  <!-- start world -->
+  <!-- start world and launch gazebo -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find swarmbots)/worlds/$(arg world).world"/>
-    <arg name="paused" value="false"/>
+    <arg name="paused" value="true"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="gui" value="true"/>
     <arg name="headless" value="false"/>
@@ -19,21 +19,15 @@
   </include> 
 
   <arg name="newrobots" value="$(eval arg('robots') - 1)"/>
-  <!-- start first robot -->
+  <!-- launch first robot -->
   <include file="$(find swarmbots)/launch/follower.launch" if="$(eval arg('robots') >= 0)">
     <arg name="followers" value="$(arg newrobots)"/>
     <arg name="ns" value="robot$(arg newrobots)"/>
   </include>
 
-
-  <!-- start gmapping -->
+  <!-- launch gmapping on robots. comment out the include to launch separately -->
   <include file="$(find swarmbots)/launch/gmapping_merge.launch">
     <arg name="robots" value="$(arg robots)"/>
   </include>
-
-  <!-- start move base 
-  <include file="$(find swarmbots)/launch/swarmbots_move_base.launch">
-    <arg name="robots" value="$(arg robots)"/>
-  </include>-->
 
 </launch>

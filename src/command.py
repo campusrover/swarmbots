@@ -1,10 +1,15 @@
 #!/usr/bin/env python  
+
+# Processes user input from terminal into commands to swarmbots
+
 import rospy
 from std_msgs.msg import String
 
+# [INITIALIZE NODE]
 rospy.init_node('user_commands')
 
-pub = rospy.Publisher('/command', String, queue_size='1', latch=True)
+# [PUBLISHERS]
+pub = rospy.Publisher('/command', String, queue_size='1', latch=True) # latched topic
 
 if __name__ == '__main__':
     while not rospy.is_shutdown():
@@ -18,5 +23,6 @@ if __name__ == '__main__':
         else:
             print("Unrecognized command.")
             continue
+        
         pub.publish(command_msg)
         print 'published command', command_msg

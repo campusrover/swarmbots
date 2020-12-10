@@ -1,7 +1,8 @@
 <launch>
-  <arg name="ns" default="/swarmboss"/>
+  <arg name="ns" default="robot0"/>
 
   <!-- Gmapping -->
+  <!-- may be modified from original gmapping -->
   <node pkg="gmapping" type="slam_gmapping" name="turtlebot3_slam_gmapping" output="log" ns="$(arg ns)">
     <param name="base_frame" value="$(arg ns)/base_footprint"/>
     <param name="odom_frame" value="$(arg ns)/odom"/>

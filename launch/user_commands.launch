@@ -1,5 +1,4 @@
 <launch>
-
+<!-- simply launches command.py -->
 <node pkg="swarmbots" type="command.py" respawn="false" name="user_commands" output="screen"/>
-
 </launch>

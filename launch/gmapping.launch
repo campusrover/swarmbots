@@ -1,8 +1,7 @@
 <launch>
-<!-- Right now the # of maps are entered semi-manually by entering # of followers. Will fix later if time willing -->
 <arg name='robots' default="2"/>
 
-<!-- Follower maps -->
+<!-- launch gmapping for current robot -->
 <arg name="newrobots" value="$(eval arg('robots') - 1)"/>
 <group ns="robot$(arg newrobots)">
     <include file="$(find swarmbots)/launch/multi_turtlebot3_slam.launch" if="$(eval arg('robots') > 0)">
@@ -10,7 +9,7 @@
     </include>
 </group>
 
-<!-- Recursively launch this file again for the rest of the bots? -->
+<!-- Recursively launch this file again for the rest of the bots -->
 <include file="$(find swarmbots)/launch/gmapping.launch" if="$(eval arg('robots') > 1)">
     <arg name="robots" value="$(eval arg('robots') - 1)"/>
 </include>

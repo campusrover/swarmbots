@@ -1,13 +1,15 @@
 <launch>
-
 <arg name="robots" default="2"/>
 
+<!-- gmapping for individual robots -->
 <include file="$(find swarmbots)/launch/gmapping.launch">
     <arg name="robots" value="$(arg robots)"/>
 </include>
 
+<!-- launch actual map_merge (modified launch file from multirobot map merge) -->
 <include file="$(find swarmbots)/launch/map_merge.launch" />
 
+<!-- add tf for map_merge-->
 <node pkg="swarmbots" type="tf_map_merge.py" respawn="false" name="tf_map_merge" output="log"/>
 
 </launch>

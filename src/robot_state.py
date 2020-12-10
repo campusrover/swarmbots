@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+# Manages states of robots and publishes them
+
 import rospy, math, random
 from swarmbots.msg import State
 from nav_msgs.msg import Odometry
@@ -29,7 +32,7 @@ def odom_callback(msg):
     g_pose = msg.pose.pose
 
 # [HELPERS]
-def is_moving():
+def is_moving(): # check if robot made significant movement
     total_dist = 0
     prev_pos = None
     for pos in g_positions:
@@ -44,16 +47,17 @@ def calc_xy_distance(point1, point2):
 # [STATE VARIABLES]
 robot_name = rospy.get_namespace()[1:-1]
 g_leader = None
-g_leader_updated = rospy.Time.from_sec(0)
+g_leader_updated = rospy.Time.from_sec(0) # keep track of when position of leader last updated
 g_follow = None
-g_positions = [Point(), Point(), Point(), Point(), Point()]
-g_positions_updated = rospy.Time.from_sec(0)
+g_positions = [Point(), Point(), Point(), Point(), Point()] # keep track of last positions
+g_positions_updated = rospy.Time.from_sec(0) # keep track of when position last updated
 g_pose = Pose() # current position of robot
 # [CONSTANTS]
 MIN_DIST_TRAVELED = .3
 
 # [MAIN CONTROL LOOP]
 if __name__ == '__main__':
+    # [INITIALIZE NODE]
     rospy.init_node('robot_state')
 
     while rospy.get_rostime() == 0:
@@ -67,6 +71,7 @@ if __name__ == '__main__':
     odom_sub = rospy.Subscriber('odom', Odometry, odom_callback)
 
     rate = rospy.Rate(10.0)
+    
     while not rospy.is_shutdown():
         state_msg = State()
         state_msg.robot_name = robot_name

@@ -1,9 +1,9 @@
-#!/usr/bin/env python  
+#!/usr/bin/env python
+
+# Create map_merge to world tf
+
 import rospy
-
-# Because of transformations
 import tf_conversions
-
 import tf2_ros
 import geometry_msgs.msg
 from geometry_msgs.msg import Pose
@@ -26,11 +26,14 @@ def handle_robot_pose():
 
     br.sendTransform(t)
 
+# [INITIALIZE NODE]
 rospy.init_node('tf_map_merge')
+
 tfBuffer = tf2_ros.Buffer()
 listener = tf2_ros.TransformListener(tfBuffer)
 rate = rospy.Rate(10)
 
+# [MAIN CONTROL LOOP]
 while not rospy.is_shutdown():
     handle_robot_pose()
     rate.sleep()
