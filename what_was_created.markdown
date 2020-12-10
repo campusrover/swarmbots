@@ -6,17 +6,17 @@ title:  "What was created"
 # What was created
 
 ## Technical descriptions, illustrations
-![swarmbots world](/images/gazebo_cap_1.jpg)
+![swarmbots world](images/gazebo_cap_1.jpg)
 A picture of the gazebo world built for the robots. Pictured are three turtlebot3 burger models inside a maze-like area with brown walls. The blue cylinders denote charging stations for the robots.
 
-![tf tree diagram](/images/tf_demo.png)
+![tf tree diagram](images/tf_demo.png)
 This diagram shows an example of a tf tree when three robots are run at once. Each robot’s tree starting from robot#/odom has a parent frame connecting to its map. The maps in turn are children of the world frame, which is a child of the merged map at the tf frame “map”.
 Should the robots not require mapping, the tf tree is also modular--if the robot#/map topic disappears, the world frame will have “robot#/odom” as children instead.
 
 {merged map examples}
-![stage_4 mapped](/images/stage_4_fully_mapped.png)
-![swarmbots_sm mapped](/images/swarm_sm_fully_mapped.png)
-![gazebo swarmbots_sm screenshot](/images/gazebo_swarmbots_sm.jpg)
+![stage_4 mapped](images/stage_4_fully_mapped.png)
+![swarmbots_sm mapped](images/swarm_sm_fully_mapped.png)
+![gazebo swarmbots_sm screenshot](images/gazebo_swarmbots_sm.jpg)
 
 {state diagram}
 
