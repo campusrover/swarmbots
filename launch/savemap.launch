@@ -4,7 +4,7 @@
 
 <!-- map saver for map merge -->
 <node name="map_saver" pkg="map_server" type="map_saver"
-    args="-f $(find swarmbots)/maps/merged_map">
+    args="-f $(find swarmbots)/maps/merged_map"  if="$(eval arg('robots') == 1)" >
 </node>
 <!-- map saver for swarmboss 
 <group ns="swarmboss">
@@ -15,7 +15,7 @@
     </node>
 </group>-->
 
-<!-- map saver for current follower 
+<!-- map saver for current follower -->
 <arg name="newrobots" value="$(eval arg('robots') - 1)"/>
 <group ns="robot$(arg newrobots)">
     <node name="map_saver" pkg="map_server" type="map_saver" 
@@ -24,12 +24,12 @@
         <param name="map" value="/robot$(arg newrobots)/dynamic_map"/>
     </node>
 </group>
--->
 
-<!-- recursion for followers
-<include file="$(find swarmbots)/launch/savemap.launch" if="$(eval arg('followers') > 1)">
-    <arg name="followers" value="$(eval arg('followers') - 1)"/>
+
+<!-- recursion for followers -->
+<include file="$(find swarmbots)/launch/savemap.launch" if="$(eval arg('robots') > 0)">
+    <arg name="robots" value="$(eval arg('robots') - 1)"/>
 </include>
--->
+
 
 </launch> 
