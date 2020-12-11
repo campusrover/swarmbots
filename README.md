@@ -1,7 +1,7 @@
 # SWARMBOTS
 
 1. Clone map merge into catkin_ws/src: `git clone https://github.com/hrnr/m-explore.git`
-1. Run `catkin make`
+1. Run `catkin_make`
 
 - run world and initial robots: `roslaunch swarmbots main.launch world:=stage_4 robots:=2`
   - change world by setting `world:=[world name in world folder]`
