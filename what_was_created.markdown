@@ -17,10 +17,12 @@ Should the robots not require mapping, the tf tree is also modular--if the `robo
 #### Merged map examples
 
 ![stage_4 mapped](images/stage_4_fully_mapped.png)
-![swarmbots_sm mapped](images/swarm_sm_fully_mapped.png “map of world swarmbots_sm.world”)
-![gazebo swarmbots_sm screenshot](images/gazebo_swarmbots_sm.jpg “screenshot of swarmbots_sm world in gazebo”)
 
-![Launch file diagram](images/launch_tree.png “A picture of the swarmbots launch diagram tree”)
+![swarmbots_sm mapped](images/swarm_sm_fully_mapped.png)
+
+![gazebo swarmbots_sm screenshot](images/gazebo_swarmbots_sm.jpg)
+
+![Launch file diagram](images/launch_tree.png)
 
 This diagram shows the layout of the launch files in the package, which are separated for modularity. The root file is at `main.launch` which starts the gazebo world, `gmapping_merge`, and the `follower` launch files. The arrows in `gmapping` and `follower` indicate that the launch files are run multiple times, once for each robot. The `savemap.launch` file is disconnected from the main file so that the user can manually save after SLAM is given enough time to generate the maps.
 
@@ -47,7 +49,7 @@ The dynamic launch file proved to be more of a challenge than we were expecting.
 Sometimes, robots could get stuck in the Gazebo world and be unable to move. Because the movements of the non-leader swarmbots depend on the leader swarmbot, the leader getting stuck would be detrimental to the entire swarm. Thus, we needed to ensure a smooth transition of power from swarmbot to swarmbot, in case a leader got stuck or died. Our code was originally written so that the leader would be assigned at launch and never change. So, the nodes running on the leader robot were different from the nodes running on the non-leader robots. However, if we wanted to be able to switch leaders at any time, then we needed all of the swarmbots to be able to run both leader and non-leader code. This required rewriting what was the non-leader code into a state machine structure, which included a "lead" state. When necessary, any non-leader could then become the leader by switching its state to "lead".
 
 ### Spawning with random positions
-One problem we were stuck on was using parameters with shared values inside our tree of launch files. Originally, we relied mostly on passing `arg`s between launch files. However, spawning robots in randomized positions would require *parameters* to generate the random numbers, instead of args. For this case, we had to directly change the spawn_model python file from the gazebo_ros melodic build such that it would accept parameters for the spawning positions, as before it would only accept a line of arguments as the spawn position like so:
+One problem we were stuck on was using parameters with shared values inside our tree of launch files. Originally, we relied mostly on passing args between launch files. However, spawning robots in randomized positions would require *parameters* to generate the random numbers, instead of args. For this case, we had to directly change the spawn_model python file from the gazebo_ros melodic build such that it would accept parameters for the spawning positions, as before it would only accept a line of arguments as the spawn position like so:
 ``` xml
 <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model $(arg robot_name) -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param /robot_description" />
 ```
