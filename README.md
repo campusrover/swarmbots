@@ -13,8 +13,8 @@ Visit the [website](https://campusrover.github.io/swarmbots) for more details ab
 * [Collaborators](#collaborators)
 * [Description](#description)
 * [Tech stack](#tech-stack)
-# [Installation](#installation)
-# [Usage](#usage)
+* [Installation](#installation)
+* [Usage](#usage)
 
 ## Collaborators
 
