@@ -25,7 +25,7 @@ Visit the [website](https://campusrover.github.io/swarmbots) for more details ab
 
 ## Description
 
-SWARMBOTS allows multiple robots in a swarm to collaboratively map their environment. At any time, there is a single leader (the *swarmboss*) whose movement dictates the behavior of the other robots in the swarm, who may follow or disperse from the leader.
+SWARMBOTS allows multiple robots in a swarm to collaboratively map their environment. At any time, there is a single leader (the *swarmboss*) whose movement dictates the behavior of the other robots in the swarm, who may follow or disperse from the leader. 🤖🦠
 
 ## Tech stack
 
