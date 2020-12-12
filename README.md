@@ -1,7 +1,10 @@
 # SWARMBOTS
+![ros badge](https://img.shields.io/badge/ros-melodic-blue)
+![gazebo badge](https://img.shields.io/badge/gazebo-9.0.0-blue)
+![python badge](https://img.shields.io/badge/python-2.7.17-blue)
 
-![Swarmbots following each other](/assets/swarmbots_follow.gif)
-![Swarmbots mapping](/assets/swarmbots_mapping.gif)
+![Swarmbots following each other](assets/swarmbots_follow.gif =711x400)
+![Swarmbots mapping](assets/swarmbots_mapping.gif =711x400)
 
 Visit the [website](https://campusrover.github.io/swarmbots) for more details about SWARMBOTS.
 
