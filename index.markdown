@@ -7,6 +7,9 @@ layout: default
 
 # Introduction
 
+![Swarmbots following each other](images/swarmbots_follow.gif)
+![Swarmbots mapping](images/swarmbots_mapping.gif)
+
 ## Problem statement
 The original goal was to allow multiple robots in a swarm to collaboratively perform a single task. We planned to designate a swarm leader (aka *swarmboss*) and have the other robots in the simulation follow the leader.
 
