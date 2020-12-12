@@ -21,8 +21,8 @@
 title: SWARMBOTS
 email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
-  SWARMBOTS allows multiple robots in a swarm to collaboratively map an environment. 
-  The swarm has a leader (aka swarmboss) whose movement dictates the movement of the other robots.
+  SWARMBOTS is a project created by [Kelly Duan](https://github.com/celry) and [Evalyn Berleant](https://github.com/eberleant).
+  It allows multiple robots in a swarm to collaboratively map an environment. 
 baseurl: "/swarmbots" # the subpath of your site, e.g. /blog
 url: "https://eberleant.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
