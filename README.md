@@ -1,5 +1,8 @@
 # SWARMBOTS
 
+![Swarmbots following each other](/assets/swarmbots_follow.gif)
+![Swarmbots mapping](/assets/swarmbots_mapping.gif)
+
 Visit the [website](https://campusrover.github.io/swarmbots) for more details about SWARMBOTS.
 
 ## Table of Contents
