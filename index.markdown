@@ -7,6 +7,10 @@ layout: default
 
 # Introduction
 
+## Watch it in action!
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/34NjbfXCVM0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ![Swarmbots following each other](images/swarmbots_follow.gif)
 ![Swarmbots mapping](images/swarmbots_mapping.gif)
 
